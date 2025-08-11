@@ -1,0 +1,13 @@
+{
+  "name": "tokenizer",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "encode": "node index.js encode",
+    "decode": "node index.js decode"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
