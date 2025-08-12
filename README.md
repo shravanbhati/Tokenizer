@@ -1,18 +1,25 @@
-# Tokenizer CLI
+# Tokenizer
 
 A simple command-line tool for encoding text to numerical tokens and decoding tokens back to text. This tokenizer uses a predefined character set that includes lowercase letters, uppercase letters, numbers, and common special characters.
 
-## Features
+## Files
 
-- **Encode**: Convert text strings to numerical token arrays
-- **Decode**: Convert numerical token arrays back to text
-- **Character Support**: Handles 88 different characters including:
-  - Lowercase letters (a-z)
-  - Uppercase letters (A-Z)
-  - Numbers (0-9)
-  - Special characters (!, @, #, $, %, etc.)
-  - Space character
-- **Error Handling**: Unknown characters are marked as `<?N?>`
+- [`index.js`](index.js): The main JavaScript file containing the character array and the tokenization logic.
+
+## How it Works
+
+The `index.js` file contains:
+
+1.  **`char` Array**: A comprehensive array of characters including lowercase and uppercase letters, numbers, and various symbols. This array serves as the lookup table for character positions.
+2.  **`userInput` Variable**: A string variable that holds the input text to be tokenized.
+3.  **`getArray(userInput)` Function**:
+    - Takes a string as input.
+    - Splits the input string into an array of individual characters.
+    - Iterates through each character and finds its index (numerical position) within the `char` array.
+    - Collects all found indices into a new array.
+    - Returns the array of character positions.
+
+The script then calls `getArray` with the `userInput` and logs the resulting array of positions to the console.
 
 ## Usage
 
@@ -54,8 +61,6 @@ Tokens: [33,4,11,11,14,32,48,14,17,11,3,0]
 Tokens: [33,4,11,11,14,32,48,14,17,11,3,0]
 Output: Hello World!
 ```
-
-`
 
 ## Character Set
 
@@ -114,29 +119,4 @@ tokenizer encode "Node.js"
 # Decode back
 tokenizer decode "[39,14,3,4,75,9,18]"
 # Output: Node.js
-```
-
-## Error Handling
-
-- **Invalid Commands**: Shows available commands (encode/decode)
-- **Missing Arguments**: Displays usage instructions
-- **Invalid Token Format**: Provides example of correct JSON array format
-- **Unknown Characters**: Replaced with `<?N?>` marker
-
-## Technical Details
-
-- **Language**: JavaScript (Node.js)
-- **Dependencies**: None (uses only built-in Node.js modules)
-- **Character Set Size**: 88 characters
-- **Token Format**: JSON array of integers and/or `<?N?>` strings
-
-## Development
-
-### Project Structure
-
-```
-.
-├── index.js        # Main CLI application
-├── package.json    # npm configuration
-└── README.md       # This file
 ```
