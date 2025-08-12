@@ -1,122 +1,102 @@
 # Tokenizer
 
-A simple command-line tool for encoding text to numerical tokens and decoding tokens back to text. This tokenizer uses a predefined character set that includes lowercase letters, uppercase letters, numbers, and common special characters.
+A simple command-line tool for encoding text to numerical tokens and decoding tokens back to text. This tokenizer uses a predefined vocabulary that includes special tokens for Beginning of Sentence (`<BOS>`), End of Sentence (`<EOS>`), and Unknown characters (`<UNK>`), along with lowercase letters, uppercase letters, numbers, and common special characters.
 
 ## Files
 
-- [`index.js`](index.js): The main JavaScript file containing the character array and the tokenization logic.
+- [`index.js`](index.js): The main JavaScript file containing the vocabulary array and the tokenization logic.
 
 ## How it Works
 
 The `index.js` file contains:
 
-1.  **`char` Array**: A comprehensive array of characters including lowercase and uppercase letters, numbers, and various symbols. This array serves as the lookup table for character positions.
-2.  **`userInput` Variable**: A string variable that holds the input text to be tokenized.
-3.  **`getArray(userInput)` Function**:
+1.  **`vocab` Array**: A comprehensive array of characters and special tokens (`<BOS>`, `<EOS>`, `<UNK>`). This array serves as the lookup table for character and token positions.
+2.  **`encode(text)` Function**:
     - Takes a string as input.
-    - Splits the input string into an array of individual characters.
-    - Iterates through each character and finds its index (numerical position) within the `char` array.
-    - Collects all found indices into a new array.
-    - Returns the array of character positions.
-
-The script then calls `getArray` with the `userInput` and logs the resulting array of positions to the console.
+    - Adds a `<BOS>` token (index 0) at the beginning.
+    - Iterates through each character of the input string.
+    - Finds the index of the character in the `vocab` array. If the character is not found, it uses the index for `<UNK>` (index 2).
+    - Adds an `<EOS>` token (index 1) at the end.
+    - Returns an array of numerical tokens.
+3.  **`decode(tokens)` Function**:
+    - Takes an array of numerical tokens as input.
+    - Iterates through each token.
+    - Converts the token back to its corresponding character from the `vocab` array.
+    - Handles `<UNK>` tokens by replacing them with a `?`.
+    - Ignores `<BOS>` and `<EOS>` tokens during decoding.
+    - Returns the decoded string.
+4.  **CLI Handling**: The script processes command-line arguments to determine whether to `encode` or `decode` the provided input.
 
 ## Usage
 
-#### Decoding Tokens to Text
+To run this code, you will use Node.js from your terminal.
 
-Convert an array of numerical tokens back to text:
+### Encoding Text to Tokens
 
-### Method 1: Using npm scripts
-
-#### Encoding with npm scripts:
-
-```bash
-npm run encode "Hello World!"
-```
-
-#### Decoding with npm scripts:
-
-```bash
-npm run decode "[33,4,11,11,14,32,48,14,17,11,3,0]"
-```
-
-### Method 2: Direct Node.js execution
+To convert a string into an array of numerical tokens:
 
 ```bash
 node index.js encode "Hello World!"
-node index.js decode "[33,4,11,11,14,32,48,14,17,11,3,0]"
 ```
 
-**Encoding output:**
+**Example Output:**
 
 ```
 Input: Hello World!
-Tokens: [33,4,11,11,14,32,48,14,17,11,3,0]
+Tokens: [0,33,4,11,11,14,65,22,18,17,11,3,1]
 ```
 
-**Decoding output:**
+### Decoding Tokens to Text
+
+To convert an array of numerical tokens back to a string:
+
+```bash
+node index.js decode "[0,33,4,11,11,14,65,22,18,17,11,3,1]"
+```
+
+**Example Output:**
 
 ```
-Tokens: [33,4,11,11,14,32,48,14,17,11,3,0]
+Tokens: [0,33,4,11,11,14,65,22,18,17,11,3,1]
 Output: Hello World!
-```
-
-## Character Set
-
-The tokenizer uses the following character mapping:
-
-| Index Range | Characters                                                                                     |
-| ----------- | ---------------------------------------------------------------------------------------------- |
-| 0-25        | a-z (lowercase)                                                                                |
-| 26-51       | A-Z (uppercase)                                                                                |
-| 52-61       | 0-9 (numbers)                                                                                  |
-| 62-87       | Special characters (!, @, #, $, %, ^, &, \*, (, ), \_, +, =, -, ', ;, ", ., <, >, ,, /, space) |
-
-## Examples
-
-### Using npm scripts
-
-```bash
-npm run encode "abc"
-# Output: [0,1,2]
-
-npm run decode "[0,1,2]"
-# Output: abc
-```
-
-### Using direct Node.js execution
-
-```bash
-node index.js encode "abc"
-# Output: [0,1,2]
-
-node index.js decode "[0,1,2]"
-# Output: abc
-```
-
-### Special Characters
-
-```bash
-tokenizer encode "Hello@123!"
-# Output: [33,4,11,11,14,63,52,53,54,62]
 ```
 
 ### Handling Unknown Characters
 
-```bash
-tokenizer encode "Hello 🌍"
-# Output: [33,4,11,11,14,32,"<?N?>"]
-```
-
-### Round-trip Conversion
+Characters not present in the `vocab` array will be encoded as the `<UNK>` token (index 2) and decoded as `?`.
 
 ```bash
-# Encode
-tokenizer encode "Node.js"
-# Output: [39,14,3,4,75,9,18]
-
-# Decode back
-tokenizer decode "[39,14,3,4,75,9,18]"
-# Output: Node.js
+node index.js encode "Hello 🌍"
 ```
+
+**Example Output:**
+
+```
+Input: Hello 🌍
+Tokens: [0,33,4,11,11,14,65,2,1]
+```
+
+```bash
+node index.js decode "[0,33,4,11,11,14,65,2,1]"
+```
+
+**Example Output:**
+
+```
+Tokens: [0,33,4,11,11,14,65,2,1]
+Output: Hello ?
+```
+
+## Vocabulary Set
+
+The tokenizer uses the following vocabulary mapping:
+
+| Index | Token                     | Description                         |
+| ----- | ------------------------- | ----------------------------------- |
+| 0     | `<BOS>`                   | Beginning of Sentence token         |
+| 1     | `<EOS>`                   | End of Sentence token               |
+| 2     | `<UNK>`                   | Unknown character token             |
+| 3-28  | `a-z`                     | Lowercase English alphabet          |
+| 29-54 | `A-Z`                     | Uppercase English alphabet          |
+| 55-64 | `0-9`                     | Digits                              |
+| 65-90 | `!@#$%^&*()_+-='";.<>,/ ` | Common special characters and space |
